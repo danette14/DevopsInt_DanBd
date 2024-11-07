@@ -9,7 +9,7 @@ def index():
     print('hello')
     return render_template('index.html')
 
-@app.route('/checkUrl', methods=['GET'])
+@app.route('/checkurl', methods=['GET'])
 def check():
     url = request.args.get('url', default=None)
     if url:
