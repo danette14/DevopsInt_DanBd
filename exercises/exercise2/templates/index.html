@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
     <title>Document</title>
 </head>
 <body>
     <h2>Check URL Liveness</h2>
-    <form >
-        <input type="text" id="url" name="url" placeholder="Enter URL to check">
-        <button id="button">Send</button>
+    <form id="urlForm">
+        <label for="url">Url: </label><input type="text" id="url" name="url" placeholder="Enter URL to check">
+        <button type="submit" id="button">Send</button>
     </form>
     <div id="result"></div>
+    <script src="../static/script.js"></script>
 </body>
 </html>
