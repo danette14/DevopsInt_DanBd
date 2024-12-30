@@ -3,7 +3,7 @@ $(document).ready(function(){
     $("#button").click(function sendSearch() {
        
         url = document.getElementById('url').value;
-        fetch(`/checkUrl?url=${url}`)
+        fetch(`/checkurl?url=${url}`)
             .then(response => response.json())
             .then(data => {
                 // Clear previous table content
