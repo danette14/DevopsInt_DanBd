@@ -1,10 +1,26 @@
+# .gitignore
+.env
+__pycache__/
+flask_session/
+*.pyc
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 
+# .gitignore
+.env
+.env.*
+.env
+__pycache__/
+flask_session/
+*.pyc
+
 # C extensions
 *.so
+
+*.json
 
 # Distribution / packaging
 .Python
@@ -141,6 +157,8 @@ venv.bak/
 /site
 
 # mypy
+.json
+*.json
 .mypy_cache/
 .dmypy.json
 dmypy.json
