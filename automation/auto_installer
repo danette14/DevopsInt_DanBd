@@ -1,0 +1,41 @@
+#!/bin/bash
+sudo -i
+
+#update and upgrade apt
+apt update && apt upgrade -y
+
+#create directory for the app
+mkdir /app
+chmod -R 755 /app
+cd /app
+
+#copy app file add install all requirements
+apt install python3-pip -y apt install subversion -y
+git clone https://github.com/danette14/DevopsInt_DanBd.git
+cd DevopsInt_DanBd/Domain_monitoring_app
+pip install -r requirements.txt --break-system-packages
+
+#Create service file
+cd /etc/systemd/system
+touch domainmonitoring.service
+chmod 755 domainmonitoring.service
+cat << EOF > "domainmonitoring.service"
+[Unit]
+description=Domain Monitoring Project Service
+after=network.target
+
+[Service]
+User=root
+WorkingDirectory=/app/DevopsInt_DanBd/Domain_monitoring_app
+ExecStart=/usr/bin/python3 /app/DevopsInt_DanBd/Domain_monitoring_app/app.py
+restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+#start and check the service
+sudo systemctl daemon-reload
+sudo systemctl start domainmonitoring.service
+sudo systemctl enable domainmonitoring.service
+sudo systemctl status domainmonitoring.service
