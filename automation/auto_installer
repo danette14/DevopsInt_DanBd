@@ -10,7 +10,7 @@ chmod -R 755 /app
 cd /app
 
 #copy app file add install all requirements
-apt install python3-pip -y apt install subversion -y
+apt install python3-pip -y 
 git clone https://github.com/danette14/DevopsInt_DanBd.git
 cd DevopsInt_DanBd/Domain_monitoring_app
 pip install -r requirements.txt --break-system-packages
