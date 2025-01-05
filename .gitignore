@@ -1,5 +1,5 @@
 # .gitignore
-.env
+
 __pycache__/
 flask_session/
 *.pyc
@@ -10,9 +10,7 @@ __pycache__/
 *$py.class
 
 # .gitignore
-.env
-.env.*
-.env
+
 __pycache__/
 flask_session/
 *.pyc
@@ -138,7 +136,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+
 .venv
 env/
 venv/
