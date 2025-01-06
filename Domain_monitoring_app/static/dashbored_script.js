@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const refreshAllButton = document.querySelector('.refresh-button');
     const tableBody = document.getElementById('domainsTableBody');
     const logoutButton = document.querySelector('.header-nav .logout-button');
-    const Spinner = document.getElementById('spinner');
+    
 
     // load the domains data on page load
     getDomainsData()
@@ -16,14 +16,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
      // Function to toggle spinner visibility
      function spinner(flag) {
+        const spinners = document.querySelectorAll('.spinner'); 
+           
+        spinners.forEach(spinner => {
+            spinner.style.display = flag ? 'block' : 'none';
+        });
+        
         console.log(`Spinner is toggled! with ${flag}`);
-        // Spinner.style.display = flag ? 'block' : 'none';
-        // same as 
-        if (flag) { 
-            Spinner.style.display = 'block'; 
-        } else { 
-            Spinner.style.display = 'none';
-        }
     }
 
     // Logout Button
@@ -188,6 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <td><span class="ssl-badge ${result.ssl_status}">${result.ssl_status}</span></td>
             <td>${result.expiration_date}</td><td>${result.issuer || 'Unknown'}</td>
             <td class="actions-cell">
+                <div id="spinner" class="spinner" style="display: none;"></div>
                 <button class="button action-button check-button" data-tooltip="Check Status">
                     <span class="icon">⟳</span>
                 </button>
