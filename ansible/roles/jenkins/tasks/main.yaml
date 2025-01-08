@@ -7,6 +7,11 @@
     apt:
       name: docker.io
       state: present
+
+  - name: Install Docker Compose
+    apt:
+      name: docker-compose
+      state: present
   
   - name: Create /var/jenkins_home
     file:
@@ -25,35 +30,31 @@
   - name: Set directory Permissions
     shell: chown -R 1000:1000 /var/jenkins_home
 
-  - name: Run Jenkins Container
-    docker_container:
-      name: jenkins
-      image: jenkins/jenkins
-      state: started
-      restart_policy: always
-      ports:
-        - "8080:8080"
-      volumes:
-        - /var/jenkins_home:/var/jenkins_home
 
-  - name: Disable initial admin password
-    file: 
-      path: /var/jenkins_home/secrets/initialAdminPassword
-      state: absent
-
-  - name: Create directory for Groovy script
+  - name: Create directory for casc file
     file:
-      path: /var/jenkins_home/init.groovy.d
+      path: /var/jenkins_home/casc_configs
+      state: directory
+
+  - name: Copy casc file for admin user creation and plugins installation
+    copy:
+      src: ./casc.yaml
+      dest: /var/jenkins_home/casc_configs/casc.yaml
+
+  - name: Create directory for docker compose
+    file:
+      path: /opt/jenkins
       state: directory
       mode: '0755'
 
-  - name: Copy script for amin user creation
+  - name: Copy docker-compose file for container orchestration
     copy:
-      src: ./setup-admin.groovy
-      dest: /var/jenkins_home/init.groovy.d/setup-admin.groovy
-      mode: "0644"
+      src: ./docker-compose.yml
+      dest: /opt/jenkins 
 
-  - name: Restart Jenkins container
-    docker_container:
-      name: jenkins
-      state: restarted
+  - name: Start Jenkins container with Docker Compose
+    command: docker-compose up -d
+    args:
+      chdir: /opt/jenkins
+
+  

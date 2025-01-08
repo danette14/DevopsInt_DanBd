@@ -13,4 +13,4 @@ hostnames:
 compose:                                 
   ansible_host: dns-name                 # Use the DNS name for the 'ansible_host' variable
   instance_name: tags.Name               # Create a variable `instance_name` from the Name tag
-  ansible_ip: public-ip-adress
+  ansible_ip: public_ip_adress

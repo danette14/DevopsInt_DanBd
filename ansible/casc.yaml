@@ -1,0 +1,32 @@
+jenkins:
+  systemMessage: "Jenkins configured as code!"
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "admin"
+          name: "Administrator"
+          email: "admin@admin.com"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  disableRememberMe: false
+  mode: NORMAL
+  numExecutors: 2
+  scmCheckoutRetryCount: 2
+
+unclassified:
+  pluginConfiguration:
+    configuration-as-code:
+      - name: "script-security"
+      - name: "command-launcher"
+      - name: "git"
+      - name: "pipeline"
+      - name: "pipeline stage view"
+
+tool:
+  git:
+    installations:
+      - home: "/usr/bin/git"
+        name: "Default"
