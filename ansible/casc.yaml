@@ -1,97 +1,50 @@
 jenkins:
-  authorizationStrategy:
-    loggedInUsersCanDoAnything:
-      allowAnonymousRead: false
-  crumbIssuer:
-    standard:
-      excludeClientIPFromCrumb: false
-  disableRememberMe: false
-  disabledAdministrativeMonitors:
-    - "hudson.util.DoubleLaunchChecker"
-  labelAtoms:
-    - name: "built-in"
-    - name: "docker"
-  markupFormatter: "plainText"
-  mode: NORMAL
-  myViewsTabBar: "standard"
-  nodeMonitors:
-    - "architecture"
-    - "clock"
-    - diskSpace:
-        freeSpaceThreshold: "1GiB"
-        freeSpaceWarningThreshold: "2GiB"
-    - "swapSpace"
-    - tmpSpace:
-        freeSpaceThreshold: "1GiB"
-        freeSpaceWarningThreshold: "2GiB"
-    - "responseTime"
-  nodes:
-    - permanent:
-        labelString: "docker"
-        launcher: "inbound"
-        mode: EXCLUSIVE
-        name: "docker"
-        nodeDescription: "agent for docker"
-        remoteFS: "/var/jenkins_home"
-        retentionStrategy: "always"
-  numExecutors: 2
-  primaryView:
-    all:
-      name: "all"
-  projectNamingStrategy: "standard"
-  quietPeriod: 5
-  remotingSecurity:
-    enabled: true
-  scmCheckoutRetryCount: 0
   securityRealm:
     local:
-      allowsSignup: false
-      enableCaptcha: false
       users:
-        - id: "admin"
-          name: "Admin User"
-          password: "admin" # Définition du mot de passe administrateur
-          properties:
-            - "apiToken"
-  slaveAgentPort: 50000
-  updateCenter:
-    sites:
-      - id: "default"
-        url: "https://updates.jenkins.io/update-center.json"
-  views:
-    - all:
-        name: "all"
-  viewsTabBar: "standard"
+        - username: "admin"
+          password: "adminpassword"
+          fullName: "Administrator"
+          email: "admin@example.com"
+          roles:
+            - "admin"
 
-pluginManagement:
-  plugins:
-    - id: "configuration-as-code" # Plugin pour utiliser le fichier casc.yaml
-      version: "latest"
-    - id: "pipeline-stage-view" # Plugin Pipeline Stage View
-      version: "latest"
-    - id: "git" # Plugin Git
-      version: "latest"
-    - id: "mailer" # Plugin Mailer
-      version: "latest"
-    - id: "timestamper" # Plugin pour afficher les timestamps
-      version: "latest"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything: true
+    allowAnonymousRead: false
 
-unclassified:
-  mailer:
-    charset: "UTF-8"
-    useSsl: false
-    useTls: false
-    adminAddress: "admin@admin.com"
-  location:
-    url: "http://localhost:8080/" # Adresse URL de Jenkins
-    adminAddress: "admin@admin.com"
-  timestamper:
-    allPipelines: true
-    elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '"
-    systemTimeFormat: "'<b>'HH:mm:ss'</b> '"
+  nodes:
+    - permanent:
+        name: "docker-agent"
+        description: "Node for Docker operations"
+        remoteFS: "/home/jenkins/docker"
+        labels: "docker"
+        usageMode: EXCLUSIVE
+        retentionStrategy: "always"
+        launchMethod:
+          ssh:
+            host: "docker-node.example.com"
+            port: 22
+            credentialsId: "docker-ssh-credentials"
+    - permanent:
+        name: "ansible-agent"
+        description: "Node for Ansible operations"
+        remoteFS: "/home/jenkins/ansible"
+        labels: "ansible"
+        usageMode: EXCLUSIVE
+        retentionStrategy: "always"
+        launchMethod:
+          ssh:
+            host: "ansible-node.example.com"
+            port: 22
+            credentialsId: "ansible-ssh-credentials"
 
-tool:
-  git:
-    installations:
-      - name: "Default"
-        home: "/usr/bin/git"
+  tools:
+    docker:
+      installations:
+        - name: "docker"
+          dockerHost: "unix:///var/run/docker.sock"
+    ansible:
+      installations:
+        - name: "ansible"
+          home: "/usr/local/bin/ansible"

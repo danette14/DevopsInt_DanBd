@@ -8,15 +8,12 @@
       name: docker.io
       state: present
 
-  - name: Install Docker Compose
-    apt:
-      name: docker-compose
-      state: present
-  
+   
   - name: Create /var/jenkins_home
     file:
       name: /var/jenkins_home
       state: directory
+      mode: '0755'
 
   - name: Add NFS export to fstab file
     ansible.builtin.lineinfile:
@@ -30,31 +27,48 @@
   - name: Set directory Permissions
     shell: chown -R 1000:1000 /var/jenkins_home
 
-
-  - name: Create directory for casc file
+  
+  - name: Create directory for docker build
     file:
-      path: /var/jenkins_home/casc_configs
-      state: directory
-
-  - name: Copy casc file for admin user creation and plugins installation
-    copy:
-      src: ./casc.yaml
-      dest: /var/jenkins_home/casc_configs/casc.yaml
-
-  - name: Create directory for docker compose
-    file:
-      path: /opt/jenkins
+      path: /docker
       state: directory
       mode: '0755'
 
-  - name: Copy docker-compose file for container orchestration
+  - name: Copy docker file for container orchestration
     copy:
-      src: ./docker-compose.yml
-      dest: /opt/jenkins 
+      src: ./Dockerfile
+      dest: /docker 
+      mode: '0755'
+  
+  - name: Copy the plugins file for container orchestration
+    copy:
+      src: ./plugins.txt
+      dest: /docker
+      mode: '0755' 
+  
+  - name: Copy the casc file for container orchestration
+    copy:
+      src: ./casc.yaml
+      dest: /docker
+      mode: '0755'
 
-  - name: Start Jenkins container with Docker Compose
-    command: docker-compose up -d
-    args:
-      chdir: /opt/jenkins
+  - name: Build the custom Jenkins Docker image
+    community.docker.docker_image:
+      name: custom-jenkins
+      tag: latest
+      build:
+        path: /docker
+      state: present
+
+  - name: Start Jenkins container
+    community.docker.docker_container:
+      name: jenkins
+      image: custom-jenkins
+      state: started
+      ports:
+        - "8080:8080"
+      volumes:
+        - "/var/jenkins_home:/var/jenkins_home"
+      restart_policy: unless-stopped
 
   
