@@ -46,16 +46,17 @@
       dest: /docker
       mode: '0755' 
   
-  - name: Copy the casc file for container orchestration
+  - name: Copy the casc file for jenkins configuration
     copy:
       src: ./casc.yaml
-      dest: /docker
+      dest: /var/jenkins_home
       mode: '0755'
 
   - name: Build the custom Jenkins Docker image
     community.docker.docker_image:
       name: custom-jenkins
       tag: latest
+      source: build
       build:
         path: /docker
       state: present

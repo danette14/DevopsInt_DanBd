@@ -1,50 +1,49 @@
 jenkins:
   securityRealm:
     local:
+      allowsSignup: false
       users:
-        - username: "admin"
-          password: "adminpassword"
-          fullName: "Administrator"
-          email: "admin@example.com"
-          roles:
-            - "admin"
-
+        - id: "admin"
+          password: "admin"
+  
   authorizationStrategy:
-    loggedInUsersCanDoAnything: true
-    allowAnonymousRead: false
-
+    globalMatrix:
+      permissions:
+        - "Overall/Administer:admin"
+    
+  securityConfiguration:
+    globalJobDslSecurityConfiguration:
+      useScriptSecurity: true
+    
   nodes:
-    - permanent:
-        name: "docker-agent"
-        description: "Node for Docker operations"
-        remoteFS: "/home/jenkins/docker"
-        labels: "docker"
-        usageMode: EXCLUSIVE
-        retentionStrategy: "always"
-        launchMethod:
-          ssh:
-            host: "docker-node.example.com"
-            port: 22
-            credentialsId: "docker-ssh-credentials"
-    - permanent:
-        name: "ansible-agent"
-        description: "Node for Ansible operations"
-        remoteFS: "/home/jenkins/ansible"
-        labels: "ansible"
-        usageMode: EXCLUSIVE
-        retentionStrategy: "always"
-        launchMethod:
-          ssh:
-            host: "ansible-node.example.com"
-            port: 22
-            credentialsId: "ansible-ssh-credentials"
+  - permanent:
+      name: "docker-agent"
+      labelString: "docker"
+      numExecutors: 2
+      remoteFS: "/home/jenkins"
+      launcher:
+        jnlp:
+          workDirSettings:
+            disabled: false
+            failIfWorkDirIsMissing: false
+            internalDir: "remoting"
 
-  tools:
-    docker:
-      installations:
-        - name: "docker"
-          dockerHost: "unix:///var/run/docker.sock"
-    ansible:
-      installations:
-        - name: "ansible"
-          home: "/usr/local/bin/ansible"
+  - permanent:
+      name: "ansible-agent"
+      labelString: "ansible"
+      numExecutors: 2
+      remoteFS: "/home/jenkins"
+      launcher:
+        jnlp:
+          workDirSettings:
+            disabled: false
+            failIfWorkDirIsMissing: false
+            internalDir: "remoting"
+
+  security:
+    globalJobDslSecurityConfiguration:
+      useScriptSecurity: true
+    queueItemAuthenticator:
+      authenticators:
+        - global:
+            strategy: triggeringUsersAuthorizationStrategy
