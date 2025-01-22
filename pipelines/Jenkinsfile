@@ -2,8 +2,9 @@ def commitId
 def fullCommitId
 
 pipeline {
-    label 'docker'
-
+    agent {
+       label 'docker'
+    }
     environment {
         DOCKER_CREDENTIALS_ID = 'docker'
     }
