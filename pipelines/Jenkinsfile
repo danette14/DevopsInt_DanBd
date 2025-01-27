@@ -29,8 +29,8 @@ pipeline {
             
             stage('clone repo'){
                 steps {
-                    dir('Monitoring app'){
-                    git branch: 'dev', url: 'https://github.com/ilya-work1/domain-monitoring-project.git'
+                    dir('Monitoring_app'){
+                    git branch: 'dev', url: 'https://github.com/danette14/DevopsInt_DanBd.git'
                     script {
                         fullCommitId = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
                         commitId = fullCommitId.substring(0, 5)
@@ -40,12 +40,12 @@ pipeline {
         }
             stage('docker build & run'){
                 steps {
-                    dir('Monitoring app') {
+                    dir('Monitoring_app') {
                         script {
                             echo "Commit ID is ${commitId}"
                         }
                         sh """
-                        sudo docker build -t monitorsystem:${fullCommitId} . 1> /dev/null
+                        sudo docker build -t monitorsystem:${fullCommitId} ./automation/Dockerfile 1> /dev/null
                         sudo docker run --network host --name moniappci -p 8080:8080 -d monitorsystem:${fullCommitId}
                         """
                     }
